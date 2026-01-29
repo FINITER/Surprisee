@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Will You Be My Valentine? 💘</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Comic Sans MS', cursive; }
+    body {
+      margin: 0; height: 100vh;
+      background: linear-gradient(135deg, #ffb6c1, #ffc0cb);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+    }
+    h1 {
+      color: white; font-size: 3rem;
+      text-shadow: 2px 2px #ff69b4; text-align: center;
+      margin-bottom: 50px;
+    }
+    button {
+      position: absolute; padding: 15px 30px; font-size: 1.2rem;
+      border: none; border-radius: 30px; cursor: pointer; transition: all 0.3s ease;
+      user-select: none;
+    }
+    #yesBtn {
+      background: #ff1493; color: white; left: 40%; top: 55%;
+      box-shadow: 0 0 10px #ff69b4; z-index: 5;
+      transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+    }
+    #noBtn {
+      background: white; color: #ff1493; left: 55%; top: 55%;
+      box-shadow: 0 0 10px #ff69b4; z-index: 10;
+    }
+    #result {
+      display: none; font-size: 4rem; color: white;
+      text-shadow: 3px 3px #ff1493;
+      align-items: center; justify-content: center;
+      height: 100%; flex-direction: column; text-align: center;
+      position: relative;
+    }
+    .heart {
+      position: absolute; width: 30px; height: 30px;
+      background: red;
+      clip-path: polygon(50% 0%, 61% 12%, 75% 15%, 82% 29%, 90% 50%, 50% 100%, 10% 50%, 18% 29%, 25% 15%, 39% 12%);
+      opacity: 0.9;
+      animation: float 4s forwards;
+    }
+    @keyframes float {
+      0% { transform: translate(0,0) scale(1); opacity: 0.9; }
+      25% { transform: translate(20px,-100px) scale(1.1) rotate(-10deg); }
+      50% { transform: translate(-20px,-200px) scale(1.2) rotate(10deg); }
+      75% { transform: translate(10px,-300px) scale(1.1) rotate(-5deg); }
+      100% { transform: translate(0,-400px) scale(1) opacity: 0; }
+    }
+    .gif-container {
+      position: absolute; bottom: 20px; right: 20px;
+      width: 120px; height: 120px;
+      z-index: 20;
+    }
+    .gif-container img {
+      width: 100%; height: 100%; object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+
+<audio id="bgm" loop>
+  <source src="glue.mp3" type="audio/mpeg">
+</audio>
+
+<div id="main" class="container">
+  <h1>Will you be my Valentine? 🥰💖</h1>
+  <button id="yesBtn">Yes</button>
+  <button id="noBtn">No</button>
+</div>
+
+<div id="result">
+  HELL YEAH 🔥
+  <div class="gif-container">
+    <img src="https://media.giphy.com/media/l3vR9Oq3pUlke6uA0/giphy.gif" alt="Kissing Bear">
+  </div>
+</div>
+
+<script>
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const main = document.getElementById("main");
+const result = document.getElementById("result");
+const audio = document.getElementById("bgm");
+
+let noClicks = 0;
+let yesScale = 1;
+let musicStarted = false;
+const yesTexts = ["Yes 🥰", "Pretty please 💖", "I’m yours 😘", "Say yes, please 🥺", "You + Me ❤️"];
+
+// Play music on first click
+function playMusic() {
+  if (!musicStarted) {
+    audio.play().catch(e => console.log("Autoplay blocked", e));
+    musicStarted = true;
+  }
+}
+
+// Create cute floating hearts
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.style.left = Math.random() * window.innerWidth + "px";
+  heart.style.top = window.innerHeight + "px";
+  heart.style.animationDuration = (3 + Math.random() * 2) + "s";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 4000);
+}
+
+// Go to HELL YEAH with hearts
+function goToHellYeah() {
+  main.style.display = "none";
+  result.style.display = "flex";
+  for (let i = 0; i < 50; i++) {
+    setTimeout(createHeart, i * 100);
+  }
+}
+
+// YES clicked → immediate HELL YEAH
+yesBtn.addEventListener("click", () => {
+  playMusic();
+  goToHellYeah();
+});
+
+// NO clicked → Yes doubles and No moves
+noBtn.addEventListener("click", () => {
+  playMusic();
+  noClicks++;
+
+  // DOUBLE THE YES BUTTON SIZE
+  yesScale *= 2;
+  yesBtn.style.transform = `scale(${yesScale})`;
+
+  // Change YES text
+  if (noClicks < yesTexts.length) {
+    yesBtn.innerText = yesTexts[noClicks];
+  } else if (noClicks === 5) {
+    yesBtn.innerText = "PLEASEEE ❤️";
+    yesBtn.style.width = "100vw";
+    yesBtn.style.height = "100vh";
+    yesBtn.style.left = "0";
+    yesBtn.style.top = "0";
+    yesBtn.style.borderRadius = "0";
+    yesBtn.style.fontSize = "4rem";
+    yesBtn.style.zIndex = "1000";
+  }
+
+  // Move NO button randomly
+  const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+  const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+  noBtn.style.left = `${x}px`;
+  noBtn.style.top = `${y}px`;
+});
+</script>
+</body>
+</html>
